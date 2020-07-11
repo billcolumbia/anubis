@@ -86,8 +86,9 @@ const Anubis = (opts) => {
       '/anubis-client.js',
       serveStatic('src/', { index: ['client.js'] })
     )
-    app.use(/\/((?!anubis-client\.js).)*/, (req, res) => {
-      proxied.web(req, res)
+    app.use((req, res, next) => {
+      if (req.url !== '/anubis-client.js') proxied.web(req, res)
+      else next()
     })
     server.listen(opts.port)
 
