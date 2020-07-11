@@ -31,7 +31,7 @@ const Anubis = (opts) => {
   const logger = {
     onStart () {
       log(
-        chalk.green('\n𓂀  Anubis is watching 𓂀\n'),
+        chalk.green('\n♺  Anubis is watching ♺\n'),
         chalk.yellow(opts.files),
         '\n'
       )
