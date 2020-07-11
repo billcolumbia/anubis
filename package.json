@@ -10,11 +10,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "chokidar": "^3.4.0",
-    "harmon": "^1.4.4",
-    "http-proxy": "^1.18.1",
-    "standard": "^14.3.4",
-    "ws": "^7.3.1"
+    "standard": "^14.3.4"
   },
   "standard": {
     "env": {
@@ -23,7 +19,9 @@
   },
   "dependencies": {
     "connect": "^3.7.0",
-    "express": "^4.17.1",
-    "socket.io": "^2.3.0"
+    "socket.io": "^2.3.0",
+    "chokidar": "^3.4.0",
+    "harmon": "^1.4.4",
+    "http-proxy": "^1.18.1"
   }
 }
