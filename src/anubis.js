@@ -12,11 +12,13 @@ const finalhandler = require('finalhandler')
 const path = require('path')
 const { log } = console
 
-let cliOptions = {
+const defaults = {
   files: null,
-  target: null,
-  port: null
+  target: 'http://localhost:8080',
+  port: 3000
 }
+
+const missingOptionsMessage = 'Anubis was asked to watch nothing! Anubis must be given an array or glob of files to be watched with the --files option'
 
 const scriptsToInject = (port) => {
   return `
@@ -27,7 +29,14 @@ const scriptsToInject = (port) => {
 `
 }
 
-const Anubis = (opts) => {
+const Anubis = (userOptions) => {
+  const opts = Object.assign({}, defaults, userOptions)
+
+  if (!opts.files) {
+    log(chalk.redBright(missingOptionsMessage))
+    throw new Error('Missing required options! (files)')
+  }
+
   const logger = {
     onStart () {
       log(
@@ -134,17 +143,16 @@ yargs
       }
     },
     handler (argv) {
-      cliOptions = {
+      Anubis({
         files: argv.files,
         target: argv.target,
         port: argv.port
-      }
-      Anubis(cliOptions)()
+      })()
     }
   })
   .demandOption(
     ['files'],
-    'Anubis was asked to watch nothing! Anubis must be given an array or glob of files to be watched with the --files option'
+    missingOptionsMessage
   )
   .parse()
 
