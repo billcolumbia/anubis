@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "anubis": "./src/anubis.js --help",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -18,10 +19,12 @@
     }
   },
   "dependencies": {
-    "connect": "^3.7.0",
-    "socket.io": "^2.3.0",
+    "chalk": "^4.1.0",
     "chokidar": "^3.4.0",
+    "connect": "^3.7.0",
     "harmon": "^1.4.4",
-    "http-proxy": "^1.18.1"
+    "http-proxy": "^1.18.1",
+    "socket.io": "^2.3.0",
+    "yargs": "^15.4.1"
   }
 }
