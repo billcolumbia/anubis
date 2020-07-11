@@ -2,7 +2,7 @@
   "name": "anubis",
   "version": "0.3.0",
   "description": "",
-  "main": "src/anubis.js",
+  "main": "./src/anubis.js",
   "bin": {
     "anubis": "./src/anubis.js"
   },

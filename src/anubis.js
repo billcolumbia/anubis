@@ -20,7 +20,7 @@ const scriptsToInject = (port) => {
   return `
 <!-- injected via Anubis -->
 <script src="/socket.io/socket.io.js"></script>
-<script src="http://localhost:${port}/client.js"></script>
+<script src="http://localhost:${port}/anubis-client.js"></script>
 <!-- /injected via Anubis -->
 `
 }
@@ -83,10 +83,10 @@ const Anubis = (opts) => {
       func: injectClient
     }]))
     app.use(
-      '/client.js',
+      '/anubis-client.js',
       serveStatic('src/', { index: ['client.js'] })
     )
-    app.use((req, res) => {
+    app.use(/\/((?!anubis-client\.js).)*/, (req, res) => {
       proxied.web(req, res)
     })
     server.listen(opts.port)
