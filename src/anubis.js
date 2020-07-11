@@ -8,6 +8,8 @@ const socketio = require('socket.io')
 const connect = require('connect')
 const harmon = require('harmon')
 const serveStatic = require('serve-static')
+const finalhandler = require('finalhandler')
+const path = require('path')
 const { log } = console
 
 let cliOptions = {
@@ -41,13 +43,13 @@ const Anubis = (opts) => {
         chalk.blue(` ${socket.handshake.headers.host}`)
       )
     },
-    onFileUpdated (event, path) {
+    onFileUpdated (event, filePath) {
       const time = this.timeStamp()
-      const message = path.indexOf('.css') > -1 ? 'Injecting CSS!' : 'Reloading browser!'
+      const message = filePath.indexOf('.css') > -1 ? 'Injecting CSS!' : 'Reloading browser!'
       log(
         time +
         chalk.magenta(`[${event}] `) +
-        chalk.green(`${path}`)
+        chalk.green(`${filePath}`)
       )
       log(
         time +
@@ -82,13 +84,14 @@ const Anubis = (opts) => {
       query: 'body',
       func: injectClient
     }]))
-    app.use(
-      '/anubis-client.js',
-      serveStatic('src/', { index: ['client.js'] })
-    )
     app.use((req, res, next) => {
+      console.log(req.url)
       if (req.url !== '/anubis-client.js') proxied.web(req, res)
-      else next()
+      else {
+        console.log(path.join(__dirname))
+        const serve = serveStatic(path.join(__dirname))
+        serve(req, res, finalhandler(req, res))
+      }
     })
     server.listen(opts.port)
 
@@ -103,9 +106,9 @@ const Anubis = (opts) => {
 
     chokidar
       .watch(opts.files)
-      .on('all', (event, path) => {
-        logger.onFileUpdated(event, path)
-        io.emit('filesUpdated', path)
+      .on('all', (event, filePath) => {
+        logger.onFileUpdated(event, filePath)
+        io.emit('filesUpdated', filePath)
       })
   }
 }
