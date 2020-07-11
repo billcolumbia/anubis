@@ -9,8 +9,7 @@
 </head>
 
 <body>
-    I AM PHP
-    <div class="b">ded</div>
+    <?php echo 'I AM PHP'; ?>
 </body>
 
 </html>

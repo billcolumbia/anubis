@@ -7,6 +7,7 @@ const http = require('http')
 const socketio = require('socket.io')
 const connect = require('connect')
 const harmon = require('harmon')
+const serveStatic = require('serve-static')
 const { log } = console
 
 let cliOptions = {
@@ -15,10 +16,14 @@ let cliOptions = {
   port: null
 }
 
-const scriptsToInject = `<!-- injected via via MachOne -->
+const scriptsToInject = (port) => {
+  return `
+<!-- injected via Anubis -->
 <script src="/socket.io/socket.io.js"></script>
-<script src="/client.js"></script>
-<!-- /injected via via MachOne -->`
+<script src="http://localhost:${port}/client.js"></script>
+<!-- /injected via Anubis -->
+`
+}
 
 const Anubis = (opts) => {
   const logger = {
@@ -62,7 +67,7 @@ const Anubis = (opts) => {
     const write = node.createWriteStream({ outer: false })
     read.pipe(write, { end: false })
     read.on('end', () => {
-      write.end(scriptsToInject)
+      write.end(scriptsToInject(opts.port))
     })
   }
 
@@ -77,6 +82,10 @@ const Anubis = (opts) => {
       query: 'body',
       func: injectClient
     }]))
+    app.use(
+      '/client.js',
+      serveStatic('src/', { index: ['client.js'] })
+    )
     app.use((req, res) => {
       proxied.web(req, res)
     })
