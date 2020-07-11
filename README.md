@@ -5,7 +5,7 @@ Ask Anubis to watch your front-end assets. When those files change, Anubis will 
 ## What Anubis is not
 
 - [HMR](https://webpack.js.org/concepts/hot-module-replacement/):
-This is not Hot Module Replacement is not not intended to replace it. Anubis is best used for websites with limited JavaScript client managed state, and is not recommended for web apps.
+This is not Hot Module Replacement is not not intended to replace it. Anubis is best used for websites with minimal client-managed state, and is not recommended for web apps or SPAs.
 - [LiveReload](http://livereload.com/):
 Anubis shares some ideas from the days of old, but is not at feature parity with LiveReload at this time.
 - [BrowserSync](https://www.browsersync.io/)
