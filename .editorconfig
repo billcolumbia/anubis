@@ -5,11 +5,11 @@ end_of_line = lf
 insert_final_newline = true
 charset = utf-8
 
-[*.{php, html, twig}]
+[*.{php,html,twig}]
 indent_style = space
 indent_size = 4
 
-[*.{js, css, pcss, svelte, json}]
+[*.{js,css,pcss,svelte,json}]
 indent_style = space
 indent_size = 2
 
