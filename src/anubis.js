@@ -39,7 +39,7 @@ const Anubis = (opts) => {
     onClientConnect (socket) {
       log(
         this.timeStamp() +
-        chalk.yellow('[⚭ browser connected]') +
+        chalk.magenta('[⚭ browser connected]') +
         chalk.blue(` ${socket.handshake.headers.host}`)
       )
     },
@@ -85,10 +85,8 @@ const Anubis = (opts) => {
       func: injectClient
     }]))
     app.use((req, res, next) => {
-      console.log(req.url)
       if (req.url !== '/anubis-client.js') proxied.web(req, res)
       else {
-        console.log(path.join(__dirname))
         const serve = serveStatic(path.join(__dirname))
         serve(req, res, finalhandler(req, res))
       }
