@@ -40,9 +40,8 @@ const Anubis = (userOptions) => {
   const logger = {
     onStart () {
       log(
-        chalk.green('\n♺  Anubis is watching ♺\n'),
-        chalk.yellow(opts.files),
-        '\n'
+        chalk.green('\nAnubis is watching 👀'),
+        chalk.blue(`\nhttp://localhost:${opts.port} 🆙\n`)
       )
     },
     onClientConnect (socket) {

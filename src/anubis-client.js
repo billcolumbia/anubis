@@ -19,14 +19,7 @@ const injectCSS = (path) => {
   }
 }
 
-const reload = () => {
-  location.reload()
-}
-
 socket.on('filesUpdated', (path) => {
-  const isCSS = path.indexOf('.css') > -1
-  const isJS = path.indexOf('.js') > -1
-
-  if (isCSS) injectCSS(path)
-  else if (isJS) reload()
+  if (path.indexOf('.css') > -1) injectCSS(path)
+  else location.reload()
 })
