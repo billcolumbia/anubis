@@ -6,10 +6,10 @@ Ask Anubis to watch your front-end assets. When those files change, Anubis will 
 
 - [HMR](https://webpack.js.org/concepts/hot-module-replacement/):
     
-    This is not Hot Module Replacement is not not intended to replace it. Anubis is best used for websites with minimal client-managed state, and is not recommended for web apps or SPAs.
+    This is not Hot Module Replacement and is not intended to replace it. Anubis is best used for websites with minimal client-managed state, and is not recommended for web apps or SPAs.
 - [LiveReload](http://livereload.com/):
     
-    Anubis shares some ideas from the days of old, but is not at feature parity with LiveReload at this time.
+    Anubis shares some ideas from the days of old, but is not at feature parity with LiveReload.
 - [BrowserSync](https://www.browsersync.io/):
     
     Anubis shares some ideas with BrowserSync, but will never meet feature parity. Anubis does not sync scroll position, have a dashboard, etc.
@@ -63,7 +63,7 @@ npx anubis --help
     _default_: http://localhost:8080
 - **`files`**: 
     
-    _about_: Files to watch for changes (usually best to watch the compiled files if possible so we don't inject/reload to early)
+    _about_: Files to watch for changes (usually best to watch the compiled files if possible so we don't inject/reload too early)
     
     _required_: yes
 
