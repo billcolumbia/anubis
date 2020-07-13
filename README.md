@@ -36,12 +36,25 @@ npm i -D https://github.com/billcolumbia/anubis
 }
 ```
 
-### Options/API
+To pass an array of globs, just pass the same argument *n* times:
+
+```json
+{
+    "scripts": {
+        "anubis": "anubis -f './public/**/*.{js,css}' -f './templates/**/*.{twig,html}'"
+    }
+}
+```
+
+### Connect to the proxy
+Once anubis is running make sure to connect to localhost at the port you provided (`localhost:3000` by default). If you go to the proxied URL, you wont get any injection or reloading!
+
+## Options/API
 ```shell
 npx anubis --help
 ```
 
-#### Available options
+### Available options
 - **`--help`**: you know...
 - **`port`**: 
     
