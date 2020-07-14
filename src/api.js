@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-const yargs = require('yargs')
 const chalk = require('chalk')
 const chokidar = require('chokidar')
 const httpProxy = require('http-proxy')
@@ -11,12 +9,7 @@ const serveStatic = require('serve-static')
 const finalhandler = require('finalhandler')
 const path = require('path')
 const { log } = console
-
-const defaults = {
-  files: null,
-  target: 'http://localhost:8080',
-  port: 3000
-}
+const defaults = require('./defaults')
 
 const missingOptionsMessage = 'Anubis was asked to watch nothing! Anubis must be given an array or glob of files to be watched with the --files option'
 
@@ -118,41 +111,5 @@ const Anubis = (userOptions) => {
       })
   }
 }
-
-yargs
-  .command({
-    command: ['start', '$0'],
-    describe: 'Start Anubis',
-    builder: {
-      files: {
-        alias: 'f',
-        describe: 'Files to watch'
-      },
-      target: {
-        alias: 't',
-        describe: 'URL to proxy',
-        default: 'http://localhost:8080',
-        type: 'string'
-      },
-      port: {
-        alias: 'p',
-        describe: 'Port to proxy to',
-        default: 3000,
-        type: 'number'
-      }
-    },
-    handler (argv) {
-      Anubis({
-        files: argv.files,
-        target: argv.target,
-        port: argv.port
-      })()
-    }
-  })
-  .demandOption(
-    ['files'],
-    missingOptionsMessage
-  )
-  .parse()
 
 module.exports = Anubis
