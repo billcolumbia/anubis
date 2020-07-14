@@ -4,7 +4,6 @@ const connect = require('connect')
 const serveStatic = require('serve-static')
 const finalhandler = require('finalhandler')
 const { webkit } = require('playwright')
-const Anubis = require('../src/api')
 
 const anubisSandbox = async (opts) => {
   const proxiedURL = `http://localhost:${opts.port}`
@@ -21,8 +20,8 @@ const anubisSandbox = async (opts) => {
   })
   server.listen(5000)
 
-  const instance = Anubis(opts)
-  instance.start()
+  const Anubis = require('../src/api')(opts)
+  Anubis.start()
 
   const browserResults = async () => {
     const browser = await webkit.launch()
@@ -57,9 +56,9 @@ const anubisSandbox = async (opts) => {
   }
 
   const results = await browserResults()
-  //instance.stop()
+  Anubis.stop()
+  server.close()
   return results
 }
 
 module.exports = anubisSandbox
-
