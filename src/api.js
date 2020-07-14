@@ -16,14 +16,15 @@ const missingOptionsMessage = 'Anubis was asked to watch nothing! Anubis must be
 const scriptsToInject = (port) => {
   return `
 <!-- injected via Anubis -->
-<script src="/socket.io/socket.io.js"></script>
-<script src="http://localhost:${port}/anubis-client.js"></script>
+<script id="anubis-socket" src="http://localhost:${port}/socket.io/socket.io.js"></script>
+<script id="anubis-client" src="http://localhost:${port}/anubis-client.js"></script>
 <!-- /injected via Anubis -->
 `
 }
 
 const Anubis = (userOptions) => {
   const opts = Object.assign({}, defaults, userOptions)
+  let app = null
 
   if (!opts.files) {
     log(chalk.redBright(missingOptionsMessage))
@@ -32,12 +33,14 @@ const Anubis = (userOptions) => {
 
   const logger = {
     onStart () {
+      if (!opts.logs) return
       log(
         chalk.green('\nAnubis is watching 👀'),
         chalk.blue(`\nhttp://localhost:${opts.port} 🆙\n`)
       )
     },
     onClientConnect (socket) {
+      if (!opts.logs) return
       log(
         this.timeStamp() +
         chalk.magenta('[⚭ browser connected]') +
@@ -45,6 +48,7 @@ const Anubis = (userOptions) => {
       )
     },
     onFileUpdated (event, filePath) {
+      if (!opts.logs) return
       const time = this.timeStamp()
       const message = filePath.indexOf('.css') > -1 ? 'Injecting CSS!' : 'Reloading browser!'
       log(
@@ -75,7 +79,7 @@ const Anubis = (userOptions) => {
   }
 
   const createServer = () => {
-    const app = connect()
+    app = connect()
     const proxied = httpProxy.createProxyServer({
       target: opts.target
     })
@@ -97,18 +101,23 @@ const Anubis = (userOptions) => {
     return { io }
   }
 
-  return () => {
-    logger.onStart()
-    const { io } = createServer()
+  return {
+    start () {
+      logger.onStart()
+      const { io } = createServer()
 
-    io.on('connection', logger.onClientConnect.bind(logger))
+      io.on('connection', logger.onClientConnect.bind(logger))
 
-    chokidar
-      .watch(opts.files)
-      .on('all', (event, filePath) => {
-        logger.onFileUpdated(event, filePath)
-        io.emit('filesUpdated', filePath)
-      })
+      chokidar
+        .watch(opts.files)
+        .on('all', (event, filePath) => {
+          logger.onFileUpdated(event, filePath)
+          io.emit('filesUpdated', filePath)
+        })
+    },
+    stop () {
+      app.close()
+    }
   }
 }
 
