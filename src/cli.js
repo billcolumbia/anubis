@@ -22,13 +22,20 @@ yargs
         describe: 'Port to proxy to',
         default: defaults.port,
         type: 'number'
+      },
+      logs: {
+        alias: 'l',
+        describe: 'Turn logging off (not recommended)',
+        default: defaults.logs,
+        type: 'boolean'
       }
     },
     handler (argv) {
       const Anubis = require('./api')({
         files: argv.files,
         target: argv.target,
-        port: argv.port
+        port: argv.port,
+        logs: argv.logs
       })
       Anubis.start()
     }
