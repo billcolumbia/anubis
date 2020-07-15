@@ -4,15 +4,9 @@ Ask Anubis to watch your front-end assets. When those files change, Anubis will 
 
 ## What Anubis is not
 
-- [HMR](https://webpack.js.org/concepts/hot-module-replacement/):
-    
-    This is not Hot Module Replacement and is not intended to replace it. Anubis is best used for websites with minimal client-managed state, and is not recommended for web apps or SPAs.
-- [LiveReload](http://livereload.com/):
-    
-    Anubis shares some ideas from the days of old, but is not at feature parity with LiveReload.
-- [BrowserSync](https://www.browsersync.io/):
-    
-    Anubis shares some ideas with BrowserSync, but will never meet feature parity. Anubis does not sync scroll position, have a dashboard, etc.
+- [HMR](https://webpack.js.org/concepts/hot-module-replacement/) &mdash; this is not Hot Module Replacement and is not intended to replace it. Anubis is best used for websites with minimal client-managed state, and is not recommended for web apps or SPAs.
+- [LiveReload](http://livereload.com/) &mdash; shares some ideas from the days of old, but is not at feature parity with LiveReload with things like injecting `<style>` and `<img>` tags.
+- [BrowserSync](https://www.browsersync.io/) &mdash; shares some ideas with BrowserSync, but will never meet feature parity. Anubis does not sync scroll position, have a dashboard, etc.
 
 ## What Anubis excels at
 - Injecting CSS changes (via `link` tags, no `style` support yet)
