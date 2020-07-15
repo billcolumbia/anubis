@@ -1,6 +1,6 @@
 {
   "name": "anubis",
-  "version": "0.4.0",
+  "version": "0.6.0",
   "description": "",
   "main": "./src/api.js",
   "bin": {
@@ -13,6 +13,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@ufhealth/shipit": "^0.3.2",
     "jest": "^26.1.0",
     "playwright": "^1.2.1",
     "standard": "^14.3.4"
