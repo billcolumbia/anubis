@@ -51,6 +51,13 @@ const Anubis = (userOptions) => {
         chalk.blue(` ${socket.handshake.headers.host}`)
       )
     },
+    onClientDisconnect () {
+      if (!opts.logs) return
+      log(
+        this.timeStamp() +
+        chalk.magenta('[% browser disconnected]')
+      )
+    },
     onFileUpdated (event, filePath) {
       if (!opts.logs) return
       const time = this.timeStamp()
@@ -109,8 +116,11 @@ const Anubis = (userOptions) => {
       logger.onStart()
       server = createServer()
       io = socketio(server)
-      io.on('connection', logger.onClientConnect.bind(logger))
-      watcher = chokidar.watch(opts.files)
+      io.on('connect', (socket) => {
+        logger.onClientConnect(socket)
+        socket.on('disconnect', logger.onClientDisconnect.bind(logger))
+      })
+      watcher = chokidar.watch(opts.files, { ignoreInitial: true })
       watcher.on('all', (event, filePath) => {
         logger.onFileUpdated(event, filePath)
         io.emit('filesUpdated', filePath)

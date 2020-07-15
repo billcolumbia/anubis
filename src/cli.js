@@ -25,15 +25,16 @@ yargs
       }
     },
     handler (argv) {
-      Anubis({
+      const Anubis = require('./api')({
         files: argv.files,
         target: argv.target,
         port: argv.port
-      })()
+      })
+      Anubis.start()
     }
   })
   .demandOption(
     ['files'],
-    missingOptionsMessage
+    'Anubis was asked to watch nothing! Anubis must be given an array or glob of files to be watched with the --files option'
   )
   .parse()
