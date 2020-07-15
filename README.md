@@ -54,32 +54,30 @@ Once anubis is running make sure to connect to localhost at the port you provide
 npx anubis --help
 ```
 
-### Available options
-- **`--help`**: you know...
-- **`port`**: 
-    
-    _about_: Port to proxy
-    
-    _required_: no
+### `port`:     
+**about**: Port to proxy
 
-    _type_: number
+**required**: no
 
-    _default_: 3000
-- **`target`**: 
-    
-    _about_: URL including port (root for your backend server)
-    
-    _required_: no
+**type**: number
 
-    _type_: string
+**default**: 3000
 
-    _default_: http://localhost:8080
-- **`files`**: 
+### `target`: 
+**about**: URL including port (root for your backend server)
     
-    _about_: Files to watch for changes (usually best to watch the compiled files if possible so we don't inject/reload too early)
-    
-    _required_: yes
+**required**: no
 
-    _type_: string | array (of globs)
+**type**: string
+
+**default**: http://localhost:8080
+
+### `files`: 
     
-    _default_: null
+**about**: Files to watch for changes (usually best to watch the compiled files if possible so we don't inject/reload too early)
+    
+**required**: yes
+
+**type**: string | array (of globs)
+    
+**default**: null
