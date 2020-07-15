@@ -107,24 +107,26 @@ const Anubis = (userOptions) => {
     })
     server = http.createServer(app)
     server.listen(opts.port)
+    io = socketio(server)
+    io.on('connect', (socket) => {
+      logger.onClientConnect(socket)
+      socket.on('disconnect', logger.onClientDisconnect.bind(logger))
+    })
+  }
 
-    return server
+  const createWatcher = () => {
+    watcher = chokidar.watch(opts.files, { ignoreInitial: true })
+    watcher.on('all', (event, filePath) => {
+      logger.onFileUpdated(event, filePath)
+      io.emit('filesUpdated', filePath)
+    })
   }
 
   return {
     start () {
       logger.onStart()
-      server = createServer()
-      io = socketio(server)
-      io.on('connect', (socket) => {
-        logger.onClientConnect(socket)
-        socket.on('disconnect', logger.onClientDisconnect.bind(logger))
-      })
-      watcher = chokidar.watch(opts.files, { ignoreInitial: true })
-      watcher.on('all', (event, filePath) => {
-        logger.onFileUpdated(event, filePath)
-        io.emit('filesUpdated', filePath)
-      })
+      createServer()
+      createWatcher()
     },
     stop () {
       io.close()
