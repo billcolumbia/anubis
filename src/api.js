@@ -73,9 +73,11 @@ const Anubis = (userOptions) => {
       )
     },
     timeStamp () {
-      const now = new Date()
+      const timeNow = new Date()
+        .toLocaleTimeString()
+        .replace(/\s*(AM|PM)/, '')
       return chalk.dim(
-        `[${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}] `
+        `[${timeNow}] `
       )
     }
   }
