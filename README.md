@@ -2,6 +2,8 @@
 
 Ask Anubis to watch your front-end assets. When those files change, Anubis will inject them and remove the dead link, or reload the browser altogether.
 
+<img src="screenshot.png" width="458" alt="Screenshot of Anubis CLI">
+
 ## What Anubis is not
 
 - [HMR](https://webpack.js.org/concepts/hot-module-replacement/) &mdash; this is not Hot Module Replacement and is not intended to replace it. Anubis is best used for websites with minimal client-managed state, and is not recommended for web apps or SPAs.
