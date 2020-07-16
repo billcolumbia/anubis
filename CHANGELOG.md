@@ -1,6 +1,17 @@
 # Changelog
 
 
+<h2 class="ReleaseVersion">0.6.1</h2>
+
+<p class="ReleaseDate">
+  <time datetime="2020-07-16T12:08:28.492Z">07/16/2020</time>
+</p>
+
+
+### Fixed
+- Logger time format
+
+
 <h2 class="ReleaseVersion">0.6.0</h2>
 
 <p class="ReleaseDate">
