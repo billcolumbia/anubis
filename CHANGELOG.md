@@ -1,6 +1,17 @@
 # Changelog
 
 
+<h2 class="ReleaseVersion">0.7.0</h2>
+
+<p class="ReleaseDate">
+  <time datetime="2020-07-19T13:31:23.436Z">07/19/2020</time>
+</p>
+
+
+### Updated
+- Drop harmon/trumpet in favor of simple middleware
+
+
 <h2 class="ReleaseVersion">0.6.1</h2>
 
 <p class="ReleaseDate">
