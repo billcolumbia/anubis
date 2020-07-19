@@ -25,16 +25,22 @@ const scriptsToInject = (port) => {
 
 const Anubis = (userOptions) => {
   const opts = Object.assign({}, defaults, userOptions)
-  
+
   let server = null
   let io = null
   let watcher = null
 
+  /**
+   * Can't do much if there are no files to watch...
+   */
   if (!opts.files) {
     log(chalk.redBright(missingOptionsMessage))
     throw new Error('Missing required options! (files)')
   }
 
+  /**
+   * Generic Logger for events
+   */
   const logger = {
     onStart () {
       if (!opts.logs) return
@@ -82,48 +88,74 @@ const Anubis = (userOptions) => {
     }
   }
 
-  const createServer = () => {
-    const app = connect()
-    const proxied = httpProxy.createProxyServer({
-      target: opts.target
-    })
-    app.use((req, res, next) => {
-      if (req.url !== `/${clientScriptName}`) proxied.web(req, res)
+  /**
+   * Overwrite write, writeHead, and end in the request life cycle to modify
+   * the response by injecting our socket scripts. This makes it automatic
+   * so we don't have to manually add the socket script in the project.
+   *
+   * @param {*} req 
+   * @param {*} res 
+   * @param {*} next 
+   */
+  const injectScripts = (req, res, next) => {
+    let resBody = null
+    const _write = res.write
+    const _writeHead = res.writeHead
+    const _end = res.end
+    const isHTML = (res) => {
+      return res.getHeader('Content-Type').indexOf('text/html') > -1
+    }
+
+    res.writeHead = function () {
+      let headers = (arguments.length > 2) ? arguments[2] : arguments[1]
+      headers = headers || {}
+      if (isHTML(res)) {
+        res.removeHeader('Content-Length')
+        delete headers['content-length']
+      }
+      _writeHead.apply(res, arguments)
+    }
+
+    res.write = (data) => {
+      resBody = data.toString()
+    }
+
+    res.end = () => {
+      if (isHTML(res)) {
+        resBody = resBody.replace('</body>', `${scriptsToInject(opts.port)}\n</body>`)
+      }
+
+      _write.call(res, Buffer.from(resBody))
+      _end.call(res)
+    }
+    next()
+  }
+
+  /**
+   * Proxy all our requests to backend except our static assets for the socket
+   * scripts (anubis-client and socket.io)
+   * @param {*} proxy 
+   */
+  const proxyOrServe = (proxy) => {
+    return (req, res, next) => {
+      if (req.url !== `/${clientScriptName}`) proxy.web(req, res)
       else {
         const serve = serveStatic(path.join(__dirname))
         serve(req, res, finalhandler(req, res))
       }
+    }
+  }
+
+  /**
+   * Create a webserver for our proxy, static assets, and sockets
+   */
+  const createServer = () => {
+    const app = connect()
+    const proxy = httpProxy.createProxyServer({
+      target: opts.target
     })
-    proxied.on('proxyRes', function (proxyRes, req, res) {
-      const isHTML = proxyRes.headers['content-type'].indexOf('text/html') > -1
-      if (isHTML) {
-        let markup = null
-        const _write = res.write
-        const _writeHead = res.writeHead
-        const _end = res.end
-
-        res.writeHead = function () {
-          var headers = (arguments.length > 2) ? arguments[2] : arguments[1]
-          headers = headers || {}
-          res.removeHeader('Content-Length')
-          delete headers['content-length']
-          _writeHead.apply(res, arguments)
-        }
-
-        res.write = (data) => {
-          markup = data.toString()
-        }
-
-        res.end = () => {
-          const resBody = markup.replace(
-            '</body>',
-            `${scriptsToInject(opts.port)}\n</body>`
-          )
-          _write.call(res, Buffer.from(resBody))
-          _end.call(res)
-        };
-      }
-    })
+    app.use(injectScripts)
+    app.use(proxyOrServe(proxy))
     server = http.createServer(app)
     server.listen(opts.port)
     io = socketio(server)
@@ -133,6 +165,9 @@ const Anubis = (userOptions) => {
     })
   }
 
+  /**
+   * Just a wrapper around chokidar that fires events to connected socket
+   */
   const createWatcher = () => {
     watcher = chokidar.watch(opts.files, { ignoreInitial: true })
     watcher.on('all', (event, filePath) => {
