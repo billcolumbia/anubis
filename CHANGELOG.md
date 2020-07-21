@@ -1,6 +1,17 @@
 # Changelog
 
 
+<h2 class="ReleaseVersion">0.8.0</h2>
+
+<p class="ReleaseDate">
+  <time datetime="2020-07-21T23:25:48.501Z">07/21/2020</time>
+</p>
+
+
+### New
+- added openBrowser option (defaults to true) that will open default browser to the proxied server address on start
+
+
 <h2 class="ReleaseVersion">0.7.2</h2>
 
 <p class="ReleaseDate">
