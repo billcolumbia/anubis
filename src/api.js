@@ -88,6 +88,15 @@ const Anubis = (userOptions) => {
     }
   }
 
+  const injectClient = (node) => {
+    const read = node.createReadStream()
+    const write = node.createWriteStream({ outer: false })
+    read.pipe(write, { end: false })
+    read.on('end', () => {
+      write.end(scriptsToInject(opts.port))
+    })
+  }
+
   /**
    * Overwrite write, writeHead, and end in the request life cycle to modify
    * the response by injecting our socket scripts. This makes it automatic
@@ -98,16 +107,16 @@ const Anubis = (userOptions) => {
    * @param {*} next 
    */
   const injectScripts = (req, res, next) => {
-    let resBody = null
     const _write = res.write
     const _writeHead = res.writeHead
     const _end = res.end
     const isHTML = (res) => {
-      return res.getHeader('Content-Type').indexOf('text/html') > -1
+      const contentType = res.getHeader('Content-Type') || ''
+      return contentType.indexOf('text/html') === 0
     }
 
     res.writeHead = function () {
-      let headers = (arguments.length > 2) ? arguments[2] : arguments[1]
+      var headers = (arguments.length > 2) ? arguments[2] : arguments[1]
       headers = headers || {}
       if (isHTML(res)) {
         res.removeHeader('Content-Length')
@@ -116,18 +125,17 @@ const Anubis = (userOptions) => {
       _writeHead.apply(res, arguments)
     }
 
-    res.write = (data) => {
-      resBody = data.toString()
+    res.write = function (data) {
+      if (isHTML(res)) {
+        const resString = data.toString().replace('</body>', `${scriptsToInject(opts.port)}\n</body>`)
+        _write.call(res, Buffer.from(resString))
+      } else _write.apply(res, arguments)
     }
 
-    res.end = () => {
-      if (isHTML(res)) {
-        resBody = resBody.replace('</body>', `${scriptsToInject(opts.port)}\n</body>`)
-      }
-
-      _write.call(res, Buffer.from(resBody))
+    res.end = function (data, encoding) {
       _end.call(res)
     }
+
     next()
   }
 
