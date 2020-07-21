@@ -1,6 +1,17 @@
 # Changelog
 
 
+<h2 class="ReleaseVersion">0.7.1</h2>
+
+<p class="ReleaseDate">
+  <time datetime="2020-07-21T19:44:08.785Z">07/21/2020</time>
+</p>
+
+
+### Fixed
+- fix pass through of data that is not HTML in node responses
+
+
 <h2 class="ReleaseVersion">0.7.0</h2>
 
 <p class="ReleaseDate">
