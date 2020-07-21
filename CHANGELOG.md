@@ -1,6 +1,17 @@
 # Changelog
 
 
+<h2 class="ReleaseVersion">0.7.2</h2>
+
+<p class="ReleaseDate">
+  <time datetime="2020-07-21T19:47:52.414Z">07/21/2020</time>
+</p>
+
+
+### Fixed
+- remove dead code
+
+
 <h2 class="ReleaseVersion">0.7.1</h2>
 
 <p class="ReleaseDate">
