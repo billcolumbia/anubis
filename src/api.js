@@ -98,12 +98,14 @@ const Anubis = (userOptions) => {
    * @param {*} next 
    */
   const injectScripts = (req, res, next) => {
-    let resBody = null
+    let resString = null
+    let resData = null
     const _write = res.write
     const _writeHead = res.writeHead
     const _end = res.end
     const isHTML = (res) => {
-      return res.getHeader('Content-Type').indexOf('text/html') > -1
+      const contentHeader = res.getHeader('Content-Type')
+      return contentHeader.indexOf('text/html') > -1
     }
 
     res.writeHead = function () {
@@ -117,15 +119,18 @@ const Anubis = (userOptions) => {
     }
 
     res.write = (data) => {
-      resBody = data.toString()
+      resString = data.toString()
+      resData = data
     }
 
     res.end = () => {
       if (isHTML(res)) {
-        resBody = resBody.replace('</body>', `${scriptsToInject(opts.port)}\n</body>`)
+        resString = resString.replace('</body>', `${scriptsToInject(opts.port)}\n</body>`)
+        _write.call(res, Buffer.from(resString))
+      } else {
+        _write.call(res, resData)
       }
 
-      _write.call(res, Buffer.from(resBody))
       _end.call(res)
     }
     next()
