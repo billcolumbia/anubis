@@ -105,7 +105,7 @@ const Anubis = (userOptions) => {
     const _end = res.end
     const isHTML = (res) => {
       const contentHeader = res.getHeader('Content-Type')
-      return contentHeader.indexOf('text/html') > -1
+      return contentHeader && contentHeader.indexOf('text/html') > -1
     }
 
     res.writeHead = function () {
