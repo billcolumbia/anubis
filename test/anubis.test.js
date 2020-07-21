@@ -8,7 +8,8 @@ describe('Proxy connects and behaves as expected', () => {
       files: './sandbox/**/*.{js,css}',
       port: 9000,
       target: 'http://localhost:5000',
-      logs: false
+      logs: false,
+      openBrowser: false
     })
   })
 

@@ -77,3 +77,13 @@ npx anubis --help
 **type**: string | array (of globs)
     
 **default**: null
+
+### `openBrowser`: 
+    
+**about**: Open browser to proxy server on start?
+    
+**required**: no
+
+**type**: boolean
+    
+**default**: true

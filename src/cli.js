@@ -28,6 +28,12 @@ yargs
         describe: 'Turn logging off (not recommended)',
         default: defaults.logs,
         type: 'boolean'
+      },
+      openBrowser: {
+        alias: 'o',
+        describe: 'Open browser to proxied server on start',
+        default: defaults.openBrowser,
+        type: 'boolean'
       }
     },
     handler (argv) {
@@ -35,7 +41,8 @@ yargs
         files: argv.files,
         target: argv.target,
         port: argv.port,
-        logs: argv.logs
+        logs: argv.logs,
+        openBrowser: argv.openBrowser
       })
       Anubis.start()
     }

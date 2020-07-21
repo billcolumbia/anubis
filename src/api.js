@@ -6,6 +6,7 @@ const socketio = require('socket.io')
 const connect = require('connect')
 const serveStatic = require('serve-static')
 const finalhandler = require('finalhandler')
+const open = require('open')
 const Buffer = require('buffer').Buffer
 const path = require('path')
 const { log } = console
@@ -53,8 +54,7 @@ const Anubis = (userOptions) => {
       if (!opts.logs) return
       log(
         this.timeStamp() +
-        chalk.magenta('[⚭ browser connected]') +
-        chalk.blue(` ${socket.handshake.headers.host}`)
+        chalk.magenta('[⚭ browser connected]')
       )
     },
     onClientDisconnect () {
@@ -75,7 +75,14 @@ const Anubis = (userOptions) => {
       )
       log(
         time +
-        chalk.cyan(` ↳  ${message}`)
+        chalk.cyan(` ↳ ${message}`)
+      )
+    },
+    onBrowserOpened () {
+      if (!opts.logs) return
+      log(
+        this.timeStamp() +
+        chalk.blue(`Opening browser to http://localhost:${opts.port}`)
       )
     },
     timeStamp () {
@@ -86,6 +93,14 @@ const Anubis = (userOptions) => {
         `[${timeNow}] `
       )
     }
+  }
+
+  const openBrowser = () => {
+    if (!opts.openBrowser) return
+    (async () => {
+      logger.onBrowserOpened()
+      await open(`http://localhost:${opts.port}`)
+    })()
   }
 
   /**
@@ -180,6 +195,7 @@ const Anubis = (userOptions) => {
       logger.onStart()
       createServer()
       createWatcher()
+      openBrowser()
     },
     stop () {
       io.close()
