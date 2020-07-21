@@ -88,15 +88,6 @@ const Anubis = (userOptions) => {
     }
   }
 
-  const injectClient = (node) => {
-    const read = node.createReadStream()
-    const write = node.createWriteStream({ outer: false })
-    read.pipe(write, { end: false })
-    read.on('end', () => {
-      write.end(scriptsToInject(opts.port))
-    })
-  }
-
   /**
    * Overwrite write, writeHead, and end in the request life cycle to modify
    * the response by injecting our socket scripts. This makes it automatic
