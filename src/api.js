@@ -179,15 +179,35 @@ const Anubis = (userOptions) => {
     })
   }
 
+  let q = []
+
+  const clearQ = () => {
+    if (q.length > 0) {
+      const { event, filePath } = q[q.length - 1]
+      notifyClient(event, filePath)
+      q = []
+    }
+  }
+
+  const handleEvent = (event, filePath) => {
+    if (filePath.indexOf('.css') > -1) notifyClient(event, filePath)
+    else q.push({ event, filePath })
+  }
+
+  const notifyClient = (event, filePath) => {
+    logger.onFileUpdated(event, filePath)
+    io.emit('filesUpdated', filePath)
+  }
+
   /**
    * Just a wrapper around chokidar that fires events to connected socket
    */
   const createWatcher = () => {
     watcher = chokidar.watch(opts.files, { ignoreInitial: true })
     watcher.on('all', (event, filePath) => {
-      logger.onFileUpdated(event, filePath)
-      io.emit('filesUpdated', filePath)
+      handleEvent(event, filePath)
     })
+    const throttler = setInterval(clearQ, 200)
   }
 
   return {
