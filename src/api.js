@@ -30,6 +30,7 @@ const Anubis = (userOptions) => {
   let server = null
   let io = null
   let watcher = null
+  let throttler = null
 
   /**
    * Can't do much if there are no files to watch...
@@ -207,7 +208,7 @@ const Anubis = (userOptions) => {
     watcher.on('all', (event, filePath) => {
       handleEvent(event, filePath)
     })
-    const throttler = setInterval(clearQ, 200)
+    throttler = setInterval(clearQ, 200)
   }
 
   return {
@@ -218,6 +219,7 @@ const Anubis = (userOptions) => {
       openBrowser()
     },
     stop () {
+      clearInterval(throttler)
       io.close()
       server.close()
       watcher.close()
