@@ -1,6 +1,17 @@
 # Changelog
 
 
+<h2 class="ReleaseVersion">0.8.1</h2>
+
+<p class="ReleaseDate">
+  <time datetime="2020-07-27T12:56:46.704Z">07/27/2020</time>
+</p>
+
+
+### Updated
+- Add a queue system to prevent multiple refreshes within _n_ ms of each other
+
+
 <h2 class="ReleaseVersion">0.8.0</h2>
 
 <p class="ReleaseDate">
