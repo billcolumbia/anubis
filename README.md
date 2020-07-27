@@ -32,14 +32,10 @@ npm i -D https://github.com/billcolumbia/anubis
 }
 ```
 
-To pass an array of globs, just pass the same argument *n* times:
+To use an array of globs for the files option, pass the same `-f` argument *n* times:
 
-```json
-{
-    "scripts": {
-        "anubis": "anubis -f './public/**/*.{js,css}' -f './templates/**/*.{twig,html}'"
-    }
-}
+```shell
+anubis -f './public/**/*.{js,css}' -f './templates/**/*.{twig,html}'
 ```
 
 ### Connect to the proxy
