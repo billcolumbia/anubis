@@ -1,6 +1,17 @@
 # Changelog
 
 
+<h2 class="ReleaseVersion">0.8.2</h2>
+
+<p class="ReleaseDate">
+  <time datetime="2020-08-13T13:03:13.646Z">08/13/2020</time>
+</p>
+
+
+### Updated
+- bump dependencies
+
+
 <h2 class="ReleaseVersion">0.8.1</h2>
 
 <p class="ReleaseDate">
