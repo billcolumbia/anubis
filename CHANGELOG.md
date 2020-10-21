@@ -1,6 +1,17 @@
 # Changelog
 
 
+<h2 class="ReleaseVersion">0.9.0</h2>
+
+<p class="ReleaseDate">
+  <time datetime="2020-10-21T14:44:10.118Z">10/21/2020</time>
+</p>
+
+
+### Updated
+- Bumped deps
+
+
 <h2 class="ReleaseVersion">0.8.2</h2>
 
 <p class="ReleaseDate">
