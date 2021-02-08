@@ -11,7 +11,7 @@ describe('Proxy connects and behaves as expected', () => {
       logs: false,
       openBrowser: false
     })
-  })
+  }, 10000)
 
   test('socket.io script was injected', () => {
     expect(results.srcs.socket).toBe('http://localhost:9000/socket.io/socket.io.js')
