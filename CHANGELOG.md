@@ -1,6 +1,17 @@
 # Changelog
 
 
+<h2 class="ReleaseVersion">0.9.1</h2>
+
+<p class="ReleaseDate">
+  <time datetime="2021-03-29T14:09:12.628Z">03/29/2021</time>
+</p>
+
+
+### Updated
+- Dependencies updated
+
+
 <h2 class="ReleaseVersion">0.9.0</h2>
 
 <p class="ReleaseDate">
