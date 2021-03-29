@@ -1,6 +1,17 @@
 # Changelog
 
 
+<h2 class="ReleaseVersion">0.9.2</h2>
+
+<p class="ReleaseDate">
+  <time datetime="2021-03-29T14:13:56.580Z">03/29/2021</time>
+</p>
+
+
+### Fixed
+- add longer timeout to beforeAll in test suite for slower machines
+
+
 <h2 class="ReleaseVersion">0.9.1</h2>
 
 <p class="ReleaseDate">
