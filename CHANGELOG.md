@@ -1,6 +1,18 @@
 # Changelog
 
 
+<h2 class="ReleaseVersion">0.9.3</h2>
+
+<p class="ReleaseDate">
+  <time datetime="2021-05-05T13:19:36.450Z">05/05/2021</time>
+</p>
+
+
+### Updated
+- NPM dependencies
+- Node version to 16
+
+
 <h2 class="ReleaseVersion">0.9.2</h2>
 
 <p class="ReleaseDate">
