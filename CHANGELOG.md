@@ -1,6 +1,17 @@
 # Changelog
 
 
+<h2 class="ReleaseVersion">0.9.4</h2>
+
+<p class="ReleaseDate">
+  <time datetime="2021-07-01T13:40:40.334Z">07/01/2021</time>
+</p>
+
+
+### Updated
+- Updated dependencies with npm
+
+
 <h2 class="ReleaseVersion">0.9.3</h2>
 
 <p class="ReleaseDate">
