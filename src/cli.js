@@ -13,13 +13,13 @@ yargs
       },
       target: {
         alias: 't',
-        describe: 'URL to proxy',
+        describe: 'Backend URL',
         default: defaults.target,
         type: 'string'
       },
       port: {
         alias: 'p',
-        describe: 'Port to proxy to',
+        describe: 'Port to serve anubis client from',
         default: defaults.port,
         type: 'number'
       },
@@ -36,7 +36,7 @@ yargs
         type: 'boolean'
       }
     },
-    handler (argv) {
+    handler(argv) {
       const Anubis = require('./api')({
         files: argv.files,
         target: argv.target,

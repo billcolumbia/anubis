@@ -1,4 +1,4 @@
-const socket = window.io()
+const socket = window.io('http://localhost:3000')
 const cacheBust = '?cachebust='
 
 const injectCSS = (path) => {
@@ -9,9 +9,7 @@ const injectCSS = (path) => {
     const clone = currentLink.cloneNode(false)
     const parent = currentLink.parentNode
     const qsIndex = currentLink.href.indexOf(cacheBust)
-    const href = qsIndex > -1
-      ? currentLink.href.substring(0, qsIndex)
-      : currentLink.href
+    const href = qsIndex > -1 ? currentLink.href.substring(0, qsIndex) : currentLink.href
     clone.href = href + cacheBust + Date.now()
     if (parent.lastChild === currentLink) parent.appendChild(clone)
     else parent.insertBefore(clone, currentLink.nextSibling)
