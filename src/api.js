@@ -1,4 +1,3 @@
-const chalk = require('chalk')
 const chokidar = require('chokidar')
 const http = require('http')
 const socketio = require('socket.io')
@@ -6,134 +5,103 @@ const connect = require('connect')
 const serveStatic = require('serve-static')
 const finalhandler = require('finalhandler')
 const open = require('open')
-const Buffer = require('buffer').Buffer
 const path = require('path')
-const { log } = console
+const Logger = require('./logger')
 const defaults = require('./defaults')
 
-const missingOptionsMessage =
-  'Anubis was asked to watch nothing! Anubis must be given an array or glob of files to be watched with the --files option'
-
-const Anubis = (userOptions) => {
-  const opts = Object.assign({}, defaults, userOptions)
-
-  let server = null
-  let io = null
-  let watcher = null
-  let throttler = null
-
-  /**
-   * Can't do much if there are no files to watch...
-   */
-  if (!opts.files) {
-    log(chalk.redBright(missingOptionsMessage))
-    throw new Error('Missing required options! (files)')
+class Anubis {
+  constructor(userOptions) {
+    this.opts = Object.assign({}, defaults, userOptions)
+    if (!this.opts.files) Logger.missingFiles()
   }
 
-  /**
-   * Generic Logger for events
-   */
-  const logger = {
-    onStart() {
-      if (!opts.logs) return
-      log(chalk.green('\nAnubis is watching 👀'), chalk.blue(`\n${opts.target} 🆙\n`))
-    },
-    onClientConnect(socket) {
-      if (!opts.logs) return
-      log(this.timeStamp() + chalk.magenta('[⚭ browser connected]'))
-    },
-    onClientDisconnect() {
-      if (!opts.logs) return
-      log(this.timeStamp() + chalk.magenta('[% browser disconnected]'))
-    },
-    onFileUpdated(event, filePath) {
-      if (!opts.logs) return
-      const time = this.timeStamp()
-      const message =
-        filePath.indexOf('.css') > -1 ? 'Injecting CSS!' : 'Reloading browser!'
-      log(time + chalk.magenta(`[${event}] `) + chalk.green(`${filePath}`))
-      log(time + chalk.cyan(` ↳ ${message}`))
-    },
-    onBrowserOpened() {
-      if (!opts.logs) return
-      log(this.timeStamp() + chalk.blue(`Opening browser to ${opts.target}`))
-    },
-    timeStamp() {
-      const timeNow = new Date().toLocaleTimeString().replace(/\s*(AM|PM)/, '')
-      return chalk.dim(`[${timeNow}] `)
-    }
-  }
-
-  const openBrowser = () => {
-    if (!opts.openBrowser) return
-    ;(async () => {
-      logger.onBrowserOpened()
-      await open(`${opts.target}`)
-    })()
-  }
+  io = null
+  server = null
+  watcher = null
+  throttler = null
+  q = []
 
   /**
-   * Create a webserver for our static assets and sockets
+   * Create a basic HTTP server for serving Anubis
+   * client.js. The Anubis client creates a socket
+   * connection to inject CSS and reload the browser
+   * on certain chokidar events.
    */
-  const createServer = () => {
+  createServer = () => {
     const app = connect()
     app.use((req, res) => {
       const serve = serveStatic(path.join(__dirname))
       serve(req, res, finalhandler(req, res))
     })
-    server = http.createServer(app)
-    io = socketio(server)
-    io.on('connect', (client) => {
-      logger.onClientConnect(client)
-      client.on('disconnect', logger.onClientDisconnect.bind(logger))
+    this.server = http.createServer(app)
+    this.io = socketio(this.server)
+    this.io.on('connect', (client) => {
+      Logger.onClientConnect(client)
+      client.on('disconnect', Logger.onClientDisconnect.bind(Logger))
     })
-    server.listen(opts.port)
+    this.server.listen(this.opts.port)
   }
 
-  let q = []
-
-  const clearQ = () => {
-    if (q.length > 0) {
-      const { event, filePath } = q[q.length - 1]
-      notifyClient(event, filePath)
-      q = []
-    }
-  }
-
-  const handleEvent = (event, filePath) => {
-    if (filePath.indexOf('.css') > -1) notifyClient(event, filePath)
-    else q.push({ event, filePath })
-  }
-
-  const notifyClient = (event, filePath) => {
-    logger.onFileUpdated(event, filePath)
-    io.emit('filesUpdated', filePath)
+  openBrowser = () => {
+    if (!this.opts.openBrowser) return
+    ;(async () => {
+      Logger.onBrowserOpened(this.opts.target)
+      await open(`${this.opts.target}`)
+    })()
   }
 
   /**
-   * Just a wrapper around chokidar that fires events to connected socket
+   * Handle event from chokidar watcher
+   *
+   * Events on CSS files get sent to client immediately,
+   * all others are queued. This is because CSS gets injected
+   * and other files have a full reload. The queue tries to
+   * help prevent excessive reloads in a short period of time.
+   * @param {String} event Chokidar event
+   * @param {String} filePath path to file that triggered event
    */
-  const createWatcher = () => {
-    watcher = chokidar.watch(opts.files, { ignoreInitial: true })
-    watcher.on('all', (event, filePath) => {
-      handleEvent(event, filePath)
-    })
-    throttler = setInterval(clearQ, 200)
+  handleEvent = (event, filePath) => {
+    if (filePath.indexOf('.css') > -1) this.notifyClient(event, filePath)
+    else this.q.push({ event, filePath })
   }
 
-  return {
-    start() {
-      logger.onStart()
-      createServer()
-      createWatcher()
-      openBrowser()
-    },
-    stop() {
-      clearInterval(throttler)
-      io.close()
-      server.close()
-      watcher.close()
+  /**
+   * @param {String} event Chokidar event
+   * @param {String} filePath path to file that triggered event
+   */
+  notifyClient = (event, filePath) => {
+    Logger.onFileUpdated(event, filePath)
+    this.io.emit('filesUpdated', filePath)
+  }
+
+  clearQ = () => {
+    if (this.q.length > 0) {
+      const { event, filePath } = this.q[this.q.length - 1]
+      this.notifyClient(event, filePath)
+      this.q = []
     }
+  }
+
+  createWatcher = () => {
+    this.watcher = chokidar.watch(this.opts.files, { ignoreInitial: true })
+    this.watcher.on('all', (event, filePath) => {
+      this.handleEvent(event, filePath)
+    })
+    this.throttler = setInterval(this.clearQ, 200)
+  }
+
+  start() {
+    Logger.onStart(this.opts.target)
+    this.createServer()
+    this.createWatcher()
+    this.openBrowser()
+  }
+
+  stop() {
+    clearInterval(this.throttler)
+    this.io.close()
+    this.server.close()
+    this.watcher.close()
   }
 }
 

@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 const yargs = require('yargs')
 const defaults = require('./defaults')
+const anubis = require('./api')
 
 yargs
   .command({
@@ -37,14 +38,14 @@ yargs
       }
     },
     handler(argv) {
-      const Anubis = require('./api')({
+      const instance = new anubis({
         files: argv.files,
         target: argv.target,
         port: argv.port,
         logs: argv.logs,
         openBrowser: argv.openBrowser
       })
-      Anubis.start()
+      instance.start()
     }
   })
   .demandOption(
